@@ -1,6 +1,54 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
+
+const PostList = () => {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("No token found!");
+      return;
+    }
+
+    fetch("http:localhost:3000/admin/posts", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/auth/login");
+          return;
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setPosts(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+  
+  return (
+    <div className="postList">
+      {posts.map((post) => {
+        return <PostItem key={post.id} post={post} />;
+      })}
+    </div>
+  );
+};
 
 const LogIn = () => {
   const [email, setEmail] = useState("");
