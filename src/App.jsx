@@ -22,7 +22,12 @@ const PostDetail = () => {
     setLoading(true);
     setError("");
 
-    fetch(`http://localhost:3000/admin/posts/${id}`)
+    fetch(`http://localhost:3000/admin/posts/${id}`,{
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    })
       .then(async (response) => {
         const data = await response.json();
         if (!response.ok) {
@@ -42,17 +47,17 @@ const PostDetail = () => {
         setLoading(false);
       })
       .catch((err) => {
-        setError(err);
+        setError(err.message);
         setLoading(false);
       });
   }, [id]);
 
   const handleBackClick = () => {
-    navigate("/posts");
+    navigate("admin/posts");
   };
 
   const handleDeleteComment = (commentId) => {
-    fetch(`http:localhost:3000/admin/comments/${commentId}`, {
+    fetch(`http://localhost:3000/admin/comments/${commentId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -176,7 +181,7 @@ const PostList = () => {
       return;
     }
 
-    fetch("http:localhost:3000/admin/posts", {
+    fetch("http://localhost:3000/admin/posts", {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -224,7 +229,7 @@ const LogIn = () => {
     setSubmitting(true);
     setError("");
 
-    fetch("http:localhost:3000/auth/login", {
+    fetch("http://localhost:3000/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -236,7 +241,7 @@ const LogIn = () => {
 
         if (!response.ok) {
           throw new Error(
-            data.message || `Error ${response.status}: Login Failed`
+            data.error || `Error ${response.status}: Login Failed`
           );
         }
 
@@ -248,7 +253,7 @@ const LogIn = () => {
         return data;
       })
       .catch((err) => {
-        setError(err.message);
+        setError(err.error);
         setSubmitting(false);
       });
   };
@@ -258,7 +263,7 @@ const LogIn = () => {
       {error && <div> {error}</div>}
       <form onSubmit={handleSubmit}>
         <input
-          type="text"
+          type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
