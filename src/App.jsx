@@ -198,7 +198,7 @@ const PostDetail = () => {
           day: "numeric",
         })}
       </small>
-      <p>{post.content}</p>
+      <div dangerouslySetInnerHTML={{ __html: post.content }} />
 
       <div className="comments">
         <h3>Comments ({comments.length})</h3>
