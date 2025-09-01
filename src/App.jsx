@@ -2,6 +2,20 @@ import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import "./App.css";
 
+const PostItem = ({ post }) => {
+  const navigate = useNavigate();
+  const previewContent = post.content.split(".")[0] + ".";
+  const handlePostClick = () => {
+    navigate(`/admin/posts/${post.id}`);
+  };
+  return (
+    <div className="postItem" onClick={handlePostClick}>
+      <h1>{post.title}</h1>
+      <p>{previewContent}</p>
+    </div>
+  );
+};
+
 const PostList = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,11 +50,11 @@ const PostList = () => {
         setError(err);
         setLoading(false);
       });
-  }, []);
+  }, [navigate]);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
-  
+
   return (
     <div className="postList">
       {posts.map((post) => {
