@@ -5,8 +5,106 @@ import {
   Route,
   useNavigate,
   useParams,
+  Navigate,
 } from "react-router-dom";
+import { Editor } from "@tinymce/tinymce-react";
 import "./App.css";
+
+const CreatePost = () => {
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setMessage("");
+    setSubmitting(true);
+
+    fetch("http://localhost:3000/admin/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ title, content }),
+    })
+      .then(async (response) => {
+        const data = await response.json();
+
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/auth/login");
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to create post");
+        }
+
+        setMessage("Post created successfully");
+        navigate("/admin/posts");
+      })
+      .catch((err) => {
+        setMessage(err.message);
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
+  };
+  const handleBackClick = () => {
+    navigate("/admin/posts");
+  };
+
+  return (
+    <div className="createPost">
+      <button onClick={handleBackClick}>← Back to Posts</button>
+      {message && <div className="">{message}</div>}
+      <form onSubmit={handleSubmit}>
+        <input
+          name="title"
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Post title"
+          required
+        />
+
+        <Editor
+          apiKey={import.meta.env.VITE_API_KEY}
+          init={{
+            height: 400,
+            menubar: false,
+            plugins: [
+              "anchor",
+              "autolink",
+              "charmap",
+              "codesample",
+              "emoticons",
+              "link",
+              "lists",
+              "media",
+              "searchreplace",
+              "table",
+              "visualblocks",
+              "wordcount",
+            ],
+            toolbar:
+              "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link media table mergetags | " +
+              "addcomment showcomments | spellcheckdialog a11ycheck typography uploadcare | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
+          }}
+          value={content}
+          onEditorChange={(newValue) => setContent(newValue)}
+        />
+
+        <button className="btn" type="submit" disabled={submitting}>
+          {submitting ? "Creating post" : "Create Post"}
+        </button>
+      </form>
+    </div>
+  );
+};
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -16,13 +114,13 @@ const PostDetail = () => {
   const [comments, setComments] = useState([]);
 
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     setLoading(true);
-    setError("");
+    setMessage("");
 
-    fetch(`http://localhost:3000/admin/posts/${id}`,{
+    fetch(`http://localhost:3000/admin/posts/${id}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -47,13 +145,13 @@ const PostDetail = () => {
         setLoading(false);
       })
       .catch((err) => {
-        setError(err.message);
+        setMessage(err.message);
         setLoading(false);
       });
   }, [id]);
 
   const handleBackClick = () => {
-    navigate("admin/posts");
+    navigate("/admin/posts");
   };
 
   const handleDeleteComment = (commentId) => {
@@ -64,64 +162,33 @@ const PostDetail = () => {
       },
     })
       .then(async (response) => {
-        const data = await response.json();
-
         if (response.status === 401) {
           localStorage.removeItem("token");
           navigate("/auth/login");
           return;
         }
 
-        if (!response.ok)
-          throw new Error(
-            data.message || `Error ${response.status}: Failed to delete comment`
-          );
+        if (response.status === 204) {
+          setComments(comments.filter((comment) => comment.id !== commentId));
+          setMessage("Comment deleted successfully!");
+          setTimeout(() => setMessage(""), 3000); // Clear after 3 seconds
+          return;
+        }
 
-        return data;
-      })
-      .then((data) => {
-        setComments(comments.filter((comment) => comment.id !== commentId));
-        return data;
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || `Failed to delete comment`);
+        }
       })
       .catch((err) => {
-        setError(err);
+        setMessage(err.message);
       });
   };
 
   if (loading) return <div>Loading...</div>;
-
-  if (error) {
-    return (
-      <div>
-        <button onClick={handleBackClick} style={{ marginBottom: "20px" }}>
-          ← Back to Posts
-        </button>
-        <div
-          style={{
-            color: "red",
-            backgroundColor: "#ffe6e6",
-            padding: "20px",
-            borderRadius: "4px",
-            border: "1px solid red",
-            textAlign: "center",
-          }}
-        >
-          <h2>Error</h2>
-          <p>{error}</p>
-          {/* Allow user to retry by refreshing the page */}
-          <button
-            onClick={() => window.location.reload()}
-            style={{ marginTop: "10px" }}
-          >
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="postDetail">
+      {message && <div style={{ color: "green" }}>{message}</div>}
       <button onClick={handleBackClick}>← Back to Posts</button>
       <h1>{post.title}</h1>
       <small>
@@ -132,6 +199,7 @@ const PostDetail = () => {
         })}
       </small>
       <p>{post.content}</p>
+
       <div className="comments">
         <h3>Comments ({comments.length})</h3>
         {comments.map((c) => {
@@ -154,6 +222,7 @@ const PostDetail = () => {
     </div>
   );
 };
+
 const PostItem = ({ post }) => {
   const navigate = useNavigate();
   const previewContent = post.content.split(".")[0] + ".";
@@ -204,11 +273,16 @@ const PostList = () => {
       });
   }, [navigate]);
 
+  const handleNavigateCreatePost = () => {
+    navigate("/admin/posts/new");
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="postList">
+      <button onClick={handleNavigateCreatePost}>Create post</button>
       {posts.map((post) => {
         return <PostItem key={post.id} post={post} />;
       })}
@@ -241,7 +315,7 @@ const LogIn = () => {
 
         if (!response.ok) {
           throw new Error(
-            data.error || `Error ${response.status}: Login Failed`
+            data.error || `Error ${response.status}: Login Failed`,
           );
         }
 
@@ -289,8 +363,10 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/auth/login" element={<LogIn />} />
+        <Route path="/" element={<Navigate to="/admin/posts" replace />} />
         <Route path="/admin/posts" element={<PostList />} />
         <Route path="/admin/posts/:id" element={<PostDetail />} />
+        <Route path="/admin/posts/new" element={<CreatePost />} />
       </Routes>
     </BrowserRouter>
   );
