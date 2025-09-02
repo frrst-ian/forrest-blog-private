@@ -1,5 +1,7 @@
-import { useState, } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { auth } from "../../services/PostService";
+import LogIn from "../ui/LogIn";
 
 const LogInContainer = () => {
   const [email, setEmail] = useState("");
@@ -14,21 +16,9 @@ const LogInContainer = () => {
     setSubmitting(true);
     setError("");
 
-    fetch("http://localhost:3000/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    })
+    auth(email, password)
       .then(async (response) => {
         const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(
-            data.error || `Error ${response.status}: Login Failed`,
-          );
-        }
 
         localStorage.setItem("token", data.token);
         navigate("/admin/posts");
@@ -44,30 +34,18 @@ const LogInContainer = () => {
   };
 
   return (
-    <div className="login">
-      {error && <div> {error}</div>}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          required
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          required
-        />
-        <button type="submit" disabled={submitting}>
-          {submitting ? "Logging in..." : "Login"}
-        </button>
-      </form>
-    </div>
+    <>
+      <LogIn
+        error={error}
+        onSubmit={handleSubmit}
+        email={email}
+        setEmail={setEmail}
+        password={password}
+        setPassword={setPassword}
+        submitting={submitting}
+      />
+    </>
   );
 };
 
 export default LogInContainer;
-

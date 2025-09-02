@@ -9,6 +9,8 @@ import {
   Link,
 } from "react-router-dom";
 import { Editor } from "@tinymce/tinymce-react";
+import AppRoutes from "./Routes";
+import Navigation from "./components/Navigation";
 import "./App.css";
 
 const EditPost = () => {
@@ -531,85 +533,17 @@ const PostList = () => {
   );
 };
 
-const LogIn = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    setSubmitting(true);
-    setError("");
-
-    fetch("http://localhost:3000/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    })
-      .then(async (response) => {
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(
-            data.error || `Error ${response.status}: Login Failed`,
-          );
-        }
-
-        localStorage.setItem("token", data.token);
-        navigate("/admin/posts");
-
-        setSubmitting(false);
-
-        return data;
-      })
-      .catch((err) => {
-        setError(err.error);
-        setSubmitting(false);
-      });
-  };
-
-  return (
-    <div className="login">
-      {error && <div> {error}</div>}
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          required
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          required
-        />
-        <button type="submit" disabled={submitting}>
-          {submitting ? "Logging in..." : "Login"}
-        </button>
-      </form>
-    </div>
-  );
-};
-
 const App = () => {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/auth/login" element={<LogIn />} />
-        <Route path="/" element={<Navigate to="/admin/posts" replace />} />
-        <Route path="/admin/posts" element={<PostList />} />
-        <Route path="/admin/posts/new" element={<CreatePost />} />
-        <Route path="/admin/posts/:id/edit" element={<EditPost />} />
-        <Route path="/admin/posts/:id" element={<PostDetail />} />
-      </Routes>
+      <div className="app">
+        <header className="header">
+          <Navigation />
+        </header>
+        <main className="main">
+          <AppRoutes />
+        </main>
+      </div>
     </BrowserRouter>
   );
 };
