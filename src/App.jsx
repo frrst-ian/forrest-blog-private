@@ -6,9 +6,126 @@ import {
   useNavigate,
   useParams,
   Navigate,
+  Link,
 } from "react-router-dom";
 import { Editor } from "@tinymce/tinymce-react";
 import "./App.css";
+
+const EditPost = () => {
+  const { id } = useParams();
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetch(`http://localhost:3000/posts/${id}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Post not found");
+        return res.json();
+      })
+      .then((data) => {
+        setTitle(data.title);
+        setContent(data.content);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setMessage(err.message);
+        setLoading(false);
+      });
+  }, [id]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setMessage("");
+    setSubmitting(true);
+
+    fetch(`http://localhost:3000/admin/posts/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ title, content }),
+    })
+      .then(async (response) => {
+        const data = await response.json();
+
+        if (response.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/auth/login");
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to edit post");
+        }
+
+        setMessage("Post edited successfully");
+        navigate("/admin/posts");
+      })
+      .catch((err) => {
+        setMessage(err.message);
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
+  };
+  const handleBackClick = () => {
+    navigate("/admin/posts");
+  };
+  if (loading) return <div>Loading...</div>;
+
+  return (
+    <div className="editPost">
+      <button onClick={handleBackClick}>← Back to Posts</button>
+      {message && <div className="">{message}</div>}
+      <form onSubmit={handleSubmit}>
+        <input
+          name="title"
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Post title"
+          required
+        />
+
+        <Editor
+          apiKey={import.meta.env.VITE_API_KEY}
+          init={{
+            height: 400,
+            menubar: false,
+            plugins: [
+              "anchor",
+              "autolink",
+              "charmap",
+              "codesample",
+              "emoticons",
+              "link",
+              "lists",
+              "media",
+              "searchreplace",
+              "table",
+              "visualblocks",
+              "wordcount",
+            ],
+            toolbar:
+              "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link media table mergetags | " +
+              "addcomment showcomments | spellcheckdialog a11ycheck typography uploadcare | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
+          }}
+          value={content}
+          onEditorChange={(newValue) => setContent(newValue)}
+        />
+
+        <button className="btn" type="submit" disabled={submitting}>
+          {submitting ? "Editting post" : "Edit Post"}
+        </button>
+      </form>
+    </div>
+  );
+};
 
 const CreatePost = () => {
   const [title, setTitle] = useState("");
@@ -225,14 +342,45 @@ const PostDetail = () => {
 
 const PostItem = ({ post }) => {
   const navigate = useNavigate();
-  const previewContent = post.content.split(".")[0] + ".";
+
+  const stripHtmlTags = (html) => {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+
+    // Find first non-empty block (p or div), skip headers
+    const block = [...tempDiv.querySelectorAll("p, div")].find(
+      (el) => !/^H[1-6]$/i.test(el.tagName) && el.textContent.trim(),
+    );
+
+    let text = block ? block.textContent.trim() : tempDiv.textContent.trim();
+    if (!text) return "";
+
+    // First sentence only
+    let firstSentence =
+      text
+        .split(/[.!?]/)
+        .map((s) => s.trim())
+        .filter(Boolean)[0] || "";
+    return firstSentence.length > 100
+      ? firstSentence.substring(0, 100) + "..."
+      : firstSentence + ".";
+  };
+
+  const previewContent = stripHtmlTags(post.content);
   const handlePostClick = () => {
     navigate(`/admin/posts/${post.id}`);
   };
   return (
     <div className="postItem" onClick={handlePostClick}>
       <h1>{post.title}</h1>
-      <p>{previewContent}</p>
+      <Link
+        to={`/admin/posts/${post.id}/edit`}
+        className="btn"
+        onClick={(e) => e.stopPropagation()}
+      >
+        Edit
+      </Link>
+      <div dangerouslySetInnerHTML={{ __html: previewContent }} />
     </div>
   );
 };
@@ -365,8 +513,9 @@ const App = () => {
         <Route path="/auth/login" element={<LogIn />} />
         <Route path="/" element={<Navigate to="/admin/posts" replace />} />
         <Route path="/admin/posts" element={<PostList />} />
-        <Route path="/admin/posts/:id" element={<PostDetail />} />
         <Route path="/admin/posts/new" element={<CreatePost />} />
+        <Route path="/admin/posts/:id/edit" element={<EditPost />} />
+        <Route path="/admin/posts/:id" element={<PostDetail />} />
       </Routes>
     </BrowserRouter>
   );
