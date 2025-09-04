@@ -17,7 +17,7 @@ export async function auth(email, password) {
     return res.json();
 }
 export async function togglePostPublishStatus(postId, newStatus) {
-    const response = await fetch(`${BASE_URL}/${postId}/published`, {
+    const response = await fetch(`${BASE_URL}/admin/posts/${postId}/published`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
