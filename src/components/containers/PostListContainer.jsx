@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PostList from "../ui/PostList";
+import {
+  deletePost,
+  getPosts,
+  togglePostPublishStatus,
+} from "../../services/PostService";
 
 const PostListContainer = () => {
   const [posts, setPosts] = useState([]);
@@ -11,47 +16,32 @@ const PostListContainer = () => {
   const navigate = useNavigate();
 
   const togglePublishStatus = async (postId) => {
-    // Find the post and its current status
     const postToUpdate = posts.find((post) => post.id === postId);
     if (!postToUpdate) return;
+
     const newStatus = !postToUpdate.published;
 
     try {
-      const response = await fetch(
-        `http://localhost:3000/admin/posts/${postId}/published`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-          body: JSON.stringify({ published: newStatus }),
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to update post status.");
-      }
-
-      // Update the local state
+      await togglePostPublishStatus(postId, newStatus);
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post.id === postId ? { ...post, published: newStatus } : post,
         ),
       );
     } catch (error) {
-      console.error("Error toggling publish status:", error);
       setError(error.message);
     }
   };
 
   const handleDeletePost = (postId) => {
-    fetch(`http://localhost:3000/admin/posts/${postId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
+    if (
+      !window.confirm(
+        "Are you sure you want to delete this post? This action cannot be undone.",
+      )
+    ) {
+      return; // Exit if user cancels
+    }
+    deletePost(postId)
       .then(async (response) => {
         if (response.status === 401) {
           localStorage.removeItem("token");
@@ -75,6 +65,7 @@ const PostListContainer = () => {
         setMessage(err.message);
       });
   };
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -82,11 +73,7 @@ const PostListContainer = () => {
       return;
     }
 
-    fetch("http://localhost:3000/admin/posts", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    getPosts(token)
       .then((response) => {
         if (response.status === 401) {
           localStorage.removeItem("token");
@@ -96,11 +83,13 @@ const PostListContainer = () => {
         return response.json();
       })
       .then((data) => {
-        setPosts(data);
+        if (data) {
+          setPosts(data);
+        }
         setLoading(false);
       })
       .catch((err) => {
-        setError(err);
+        setError(err.message);
         setLoading(false);
       });
   }, [navigate]);

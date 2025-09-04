@@ -9,26 +9,19 @@ const LogInContainer = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
   const handleSubmit = (e) => {
     e.preventDefault();
-
     setSubmitting(true);
     setError("");
-
     auth(email, password)
-      .then(async (response) => {
-        const data = await response.json();
-
+      .then((data) => {
         localStorage.setItem("token", data.token);
         navigate("/admin/posts");
-
-        setSubmitting(false);
-
-        return data;
       })
       .catch((err) => {
-        setError(err.error);
+        setError(err.message);
+      })
+      .finally(() => {
         setSubmitting(false);
       });
   };

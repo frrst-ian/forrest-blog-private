@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CreatePost from "../ui/CreatePost";
+import { createPost } from "../../services/PostService";
 
 const CreatePostContainer = () => {
   const [title, setTitle] = useState("");
@@ -14,14 +15,7 @@ const CreatePostContainer = () => {
     setMessage("");
     setSubmitting(true);
 
-    fetch("http://localhost:3000/admin/posts", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({ title, content }),
-    })
+  createPost(title,content)
       .then(async (response) => {
         const data = await response.json();
 

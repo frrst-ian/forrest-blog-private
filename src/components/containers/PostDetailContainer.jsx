@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import PostDetail from "../ui/PostDetail";
+import { deleteComment, getPost } from "../../services/PostService";
 
 const PostDetailContainer = () => {
   const { id } = useParams();
@@ -16,14 +17,10 @@ const PostDetailContainer = () => {
     setLoading(true);
     setMessage("");
 
-    fetch(`http://localhost:3000/admin/posts/${id}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
+    getPost(id)
       .then(async (response) => {
         const data = await response.json();
+
         if (!response.ok) {
           if (response.status === 404) {
             throw new Error("Post not found");
@@ -33,6 +30,7 @@ const PostDetailContainer = () => {
             throw new Error(data.message || "Failed to fetch post");
           }
         }
+
         return data;
       })
       .then((data) => {
@@ -51,12 +49,7 @@ const PostDetailContainer = () => {
   };
 
   const handleDeleteComment = (commentId) => {
-    fetch(`http://localhost:3000/admin/comments/${commentId}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
+    deleteComment(commentId)
       .then(async (response) => {
         if (response.status === 401) {
           localStorage.removeItem("token");

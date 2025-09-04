@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import EditPost from "../ui/EditPost";
+import { editPost, getPost } from "../../services/PostService";
 
 const EditPostContainer = () => {
   const { id } = useParams();
@@ -12,7 +13,7 @@ const EditPostContainer = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`http://localhost:3000/posts/${id}`)
+    getPost(id)
       .then((res) => {
         if (!res.ok) throw new Error("Post not found");
         return res.json();
@@ -33,14 +34,7 @@ const EditPostContainer = () => {
     setMessage("");
     setSubmitting(true);
 
-    fetch(`http://localhost:3000/admin/posts/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-      body: JSON.stringify({ title, content }),
-    })
+    editPost(id,title,content)
       .then(async (response) => {
         const data = await response.json();
 
