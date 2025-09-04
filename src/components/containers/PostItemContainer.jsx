@@ -32,7 +32,7 @@ const PostItemContainer = ({ post, togglePublishStatus, onDeletePost }) => {
     const previewContent = stripHtmlTags(post.content);
 
     const handlePostClick = () => {
-        navigate(`admin/posts/${post.id}/edit`);
+        navigate(`/admin/posts/${post.id}/`);
     };
 
     return (

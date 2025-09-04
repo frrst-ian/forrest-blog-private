@@ -1,7 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import AppRoutes from "./Routes";
 import Navigation from "./components/Navigation";
-import "./App.css";
+import "./styles/App.css";
 
 const App = () => {
   return (

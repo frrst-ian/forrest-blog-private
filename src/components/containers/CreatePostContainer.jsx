@@ -53,7 +53,7 @@ const CreatePostContainer = () => {
     <CreatePost
       onBackClick={handleBackClick}
       onSubmit={handleSubmit}
-      title={setTitle}
+      title={title}
       setTitle={setTitle}
       message={message}
       content={content}

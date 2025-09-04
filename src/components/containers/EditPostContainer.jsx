@@ -76,7 +76,7 @@ const EditPostContainer = () => {
       message={message}
       title={title}
       setTitle={setTitle}
-      content={setContent}
+      content={content}
       setContent={setContent}
       submitting={submitting}
     />
