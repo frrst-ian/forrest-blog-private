@@ -1,0 +1,28 @@
+.navigation {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  justify-content: space-evenly;
+}
+
+.navigation_home {
+  flex: 1;
+}
+
+.navigation_links {
+  display: flex;
+  gap: 10px;
+}
+
+.active {
+  border-bottom: 2px solid #58abe9;
+  font-family: "Roboto";
+}
+
+.active:hover {
+  color: #4e98d0;
+}
+
+a.navigation_icon {
+  margin-right: 20px;
+}

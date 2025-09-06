@@ -8,6 +8,7 @@ const PostList = ({
 }) => {
     return (
         <div className="postList">
+            <h1 class="postList_title">Ian Forrest's Blog Posts</h1>
             <button onClick={onNavigateCreatePost}>Create post</button>
             {posts.map((post) => {
                 return (
