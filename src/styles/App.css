@@ -18,4 +18,26 @@
 main.main {
     flex: 1;
     padding: 0 16px;
+    min-width: 700px;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 500px;
+    color: var(--text);
+    font-family: "Jetbrains Mono";
+}
+
+@media (max-width: 768px) {
+    main.main {
+        min-width: 450px;
+    }
+}
+
+@media (max-width: 480px) {
+    main.main {
+        min-width: 0px;
+    }
 }

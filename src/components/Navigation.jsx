@@ -21,7 +21,7 @@ const Navigation = () => {
           target="_blank"
         >
           <img
-            src="src/assets/icons/github-142-svgrepo-com.svg"
+            src="../../src/assets/icons/github-142-svgrepo-com.svg"
             alt="github icon"
             width="25"
             height="25"

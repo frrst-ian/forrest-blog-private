@@ -1,4 +1,7 @@
- import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { SquarePen, BookOpenCheck, BookDashed, Trash } from "lucide-react";
+import "../../styles/components/PostItem.css";
+
 const PostItem = ({
     onPostClick,
     post,
@@ -8,33 +11,37 @@ const PostItem = ({
 }) => {
     return (
         <div className="postItem" onClick={onPostClick}>
-            <h1>{post.title}</h1>
-            <Link
-                to={`/admin/posts/${post.id}/edit`}
-                className="btn"
-                onClick={(e) => e.stopPropagation()}
-            >
-                Edit
-            </Link>
-            <button
-                className="btn"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    togglePublishStatus(post.id);
-                }}
-            >
-                {post.published ? "Unpublish" : "Publish"}
-            </button>
+            <div className="postItem_header">
+                <h1 className="postItem_title">{post.title}</h1>
+                <div className="postItem_btns">
+                    <Link
+                        to={`/admin/posts/${post.id}/edit`}
+                        className="btn --btn-edit --no-min-width"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <SquarePen />
+                    </Link>
+                    <button
+                        className="btn --btn-publish --no-min-width"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            togglePublishStatus(post.id);
+                        }}
+                    >
+                        {post.published ? <BookDashed /> : <BookOpenCheck />}
+                    </button>
 
-            <button
-                className="btn"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    onDeletePost(post.id);
-                }}
-            >
-                Delete
-            </button>
+                    <button
+                        className="btn --btn-del --no-min-width"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onDeletePost(post.id);
+                        }}
+                    >
+                        <Trash />
+                    </button>
+                </div>
+            </div>
             <div dangerouslySetInnerHTML={{ __html: previewContent }} />
         </div>
     );

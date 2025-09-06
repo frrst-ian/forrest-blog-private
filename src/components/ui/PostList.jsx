@@ -1,4 +1,5 @@
 import PostItemContainer from "../containers/PostItemContainer";
+import "../../styles/components/PostList.css"
 
 const PostList = ({
     posts,
@@ -8,8 +9,8 @@ const PostList = ({
 }) => {
     return (
         <div className="postList">
-            <h1 class="postList_title">Ian Forrest's Blog Posts</h1>
-            <button onClick={onNavigateCreatePost}>Create post</button>
+            <h1 className="postList_title">Ian Forrest's Blog Posts</h1>
+            <button className="btn --btn-create-post" onClick={onNavigateCreatePost}>Create post</button>
             {posts.map((post) => {
                 return (
                     <PostItemContainer
