@@ -12,14 +12,9 @@ h1.postList_title {
   .postList {
     padding: 16px 8px;
   }
-  
+
   h1.postList_title {
     font-size: 1.5rem;
     margin-bottom: 20px;
   }
 }
-
-.--no-min-width {
-  min-width: 10px;
-}
-

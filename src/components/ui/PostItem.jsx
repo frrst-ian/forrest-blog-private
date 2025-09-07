@@ -16,13 +16,13 @@ const PostItem = ({
                 <div className="postItem_btns">
                     <Link
                         to={`/admin/posts/${post.id}/edit`}
-                        className="btn --btn-edit --no-min-width"
+                        className="btn --btn-edit --btn-small"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <SquarePen />
                     </Link>
                     <button
-                        className="btn --btn-publish --no-min-width"
+                        className="btn --btn-publish --btn-small"
                         onClick={(e) => {
                             e.stopPropagation();
                             togglePublishStatus(post.id);
@@ -32,7 +32,7 @@ const PostItem = ({
                     </button>
 
                     <button
-                        className="btn --btn-del --no-min-width"
+                        className="btn --btn-del --btn-small"
                         onClick={(e) => {
                             e.stopPropagation();
                             onDeletePost(post.id);
@@ -42,7 +42,7 @@ const PostItem = ({
                     </button>
                 </div>
             </div>
-            <div dangerouslySetInnerHTML={{ __html: previewContent }} />
+            <div className="postItem_para" dangerouslySetInnerHTML={{ __html: previewContent }} />
         </div>
     );
 };

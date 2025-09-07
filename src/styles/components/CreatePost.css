@@ -1,0 +1,37 @@
+input.post-title {
+    margin: 12px;
+    color: white;
+    width: 100%;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    font-family: "Inter Regular";
+}
+
+.btn-group {
+    margin-top: 12px;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+}
+
+.--btn-cancel,
+.--flex1 {
+    padding: 12px;
+    margin-bottom: 12px;
+    flex: 1;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.tox.tox-tinymce {
+    width: 100%;
+}

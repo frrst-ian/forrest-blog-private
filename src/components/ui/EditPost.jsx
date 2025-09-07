@@ -12,10 +12,13 @@ const EditPost = ({
 }) => {
     return (
         <div className="editPost">
-            <button onClick={onBackClick}>← Back to Posts</button>
+            <button className="btn --btn-back" onClick={onBackClick}>
+                ← Back to Posts
+            </button>
             {message && <div className="">{message}</div>}
             <form onSubmit={onSubmit}>
                 <input
+                    className="post-title"
                     name="title"
                     type="text"
                     value={title}
@@ -50,10 +53,16 @@ const EditPost = ({
                     value={content}
                     onEditorChange={(newValue) => setContent(newValue)}
                 />
-
-                <button className="btn" type="submit" disabled={submitting}>
-                    {submitting ? "Editting post" : "Edit Post"}
-                </button>
+                <div className="btn-group">
+                    <a href="/"  className="btn --btn-cancel">Cancel</a>
+                    <button
+                        className="btn --btn-create-post --flex1"
+                        type="submit"
+                        disabled={submitting}
+                    >
+                        {submitting ? "Editing post..." : "Edit Post"}
+                    </button>
+                </div>
             </form>
         </div>
     );

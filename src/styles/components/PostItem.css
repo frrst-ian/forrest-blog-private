@@ -32,7 +32,7 @@
 
 .postItem_title {
   font-size: 22px;
-  margin-right: 8px;
+  margin-right: 50px;
   font-family: "Roboto";
 }
 
@@ -45,16 +45,35 @@
   justify-content: space-between;
 }
 
-.postItem_btns {
-  display: flex;
-  justify-content: end;
-  gap: 12px;
-  text-align: center;
+.btn {
+  border: none;
+  padding: 7px;
+  border-radius: 10px;
+  font-family: "Jetbrains Mono";
+  background-color: var(--btn-primary);
+  color: var(--text-2);
+  transition: ease-in-out 0.2s;
+  cursor: pointer;
 }
 
-.btn.--no-min-width {
-  min-width: 10px;
+.btn:hover {
+  transition: ease-in-out 0.2s;
+  color: var(--text);
+  background-color: #2c3136;
 }
+
+.--btn-create-post, .--btn-back {
+    margin-bottom: 12px;
+    padding: 12px;
+}
+
+
+.postItem_btns {display: flex;
+justify-content: end;
+gap: 12px;
+text-align: center;
+flex-shrink: 0;
+align-items: center;}
 
 @media (max-width: 768px) {
   .postItem {
@@ -65,6 +84,7 @@
   .postItem_title {
     font-size: 1.2rem;
     line-height: 1.4;
+    margin-right:6px;
   }
 
   .postItem_para {
@@ -77,15 +97,32 @@
     transition: transform 0.1s;
   }
 
-  .btn .--no-min-width {
-    min-width: none;
+  .--btn-small {
+    padding: 6px;
   }
+
+
 }
 
-button.btn.--btn-publish.--no-min-width {
-    background-color: #3D5B5E;
+@media (max-width: 480px) {
+  .postItem_btns {
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .--btn-small {
+    padding: 4px;
 }
 
-a.btn.--btn-edit.--no-min-width {
-    background-color: #579088;
+.postItem_title {
+  margin-right: 4px;
+}
+}
+
+.btn.--btn-publish {
+  background-color: #3d5b5e;
+}
+
+a.btn.--btn-edit {
+  background-color: #579088;
 }

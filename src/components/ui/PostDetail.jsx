@@ -11,8 +11,8 @@ const PostDetail = ({
 }) => {
   return (
     <div className="postDetail">
-      {message && <div style={{ color: "green" }}>{message}</div>}
-      <button className="btn" onClick={onBackClick}>
+      {message && <div className="success">{message}</div>}
+      <button className="btn --btn-back" onClick={onBackClick}>
         ← Back to Posts
       </button>
       <h1 className="postDetail_title">{post.title}</h1>

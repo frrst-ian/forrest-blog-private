@@ -1,4 +1,5 @@
 import { Editor } from "@tinymce/tinymce-react";
+import "../../styles/components/CreatePost.css";
 
 const CreatePost = ({
     onBackClick,
@@ -12,18 +13,20 @@ const CreatePost = ({
 }) => {
     return (
         <div className="createPost">
-            <button onClick={onBackClick}>← Back to Posts</button>
+            <button className="btn --btn-back" onClick={onBackClick}>
+                ← Back to Posts
+            </button>
             {message && <div className="">{message}</div>}
             <form onSubmit={onSubmit}>
                 <input
                     name="title"
+                    className="post-title"
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Post title"
                     required
                 />
-
                 <Editor
                     apiKey={import.meta.env.VITE_API_KEY}
                     init={{
@@ -50,10 +53,18 @@ const CreatePost = ({
                     value={content}
                     onEditorChange={(newValue) => setContent(newValue)}
                 />
-
-                <button className="btn" type="submit" disabled={submitting}>
-                    {submitting ? "Creating post" : "Create Post"}
-                </button>
+                <div className="btn-group">
+                    <a href="/" className="btn --btn-cancel">
+                    Cancel
+                    </a>
+                    <button
+                        className="btn --btn-create-post --flex1"
+                        type="submit"
+                        disabled={submitting}
+                    >
+                        {submitting ? "Creating post..." : "Create Post"}
+                    </button>
+                </div>
             </form>
         </div>
     );
