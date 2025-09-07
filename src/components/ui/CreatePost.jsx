@@ -1,5 +1,6 @@
 import { Editor } from "@tinymce/tinymce-react";
 import "../../styles/components/CreatePost.css";
+import config from "../../config/env.js"
 
 const CreatePost = ({
     onBackClick,
@@ -28,7 +29,7 @@ const CreatePost = ({
                     required
                 />
                 <Editor
-                    apiKey={import.meta.env.VITE_API_KEY}
+                    apiKey={config.tinymceApiKey}
                     init={{
                         height: 400,
                         menubar: false,
