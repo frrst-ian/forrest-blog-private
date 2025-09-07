@@ -34,7 +34,7 @@ export async function togglePostPublishStatus(postId, newStatus) {
 
 export async function deletePost(postId) {
     const response = await fetch(
-        `http://localhost:3000/admin/posts/${postId}`,
+        `${BASE_URL}/${postId}`,
         {
             method: "DELETE",
             headers: {
@@ -46,7 +46,7 @@ export async function deletePost(postId) {
 }
 
 export async function getPosts(token) {
-    const res = await fetch("http://localhost:3000/admin/posts", {
+    const res = await fetch(`${BASE_URL}/admin/posts`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -56,7 +56,7 @@ export async function getPosts(token) {
 }
 
 export async function getPost(postId) {
-    const res = await fetch(`http://localhost:3000/admin/posts/${postId}`, {
+    const res = await fetch(`${BASE_URL}/admin/posts/${postId}`, {
         method: "GET",
         headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -68,7 +68,7 @@ export async function getPost(postId) {
 
 export async function deleteComment(commentId) {
     const res = await fetch(
-        `http://localhost:3000/admin/comments/${commentId}`,
+        `${BASE_URL}/admin/comments/${commentId}`,
         {
             method: "DELETE",
             headers: {
@@ -81,7 +81,7 @@ export async function deleteComment(commentId) {
 }
 
 export async function createPost(title, content) {
-    const res = await fetch("http://localhost:3000/admin/posts", {
+    const res = await fetch(`${BASE_URL}/admin/posts`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -93,7 +93,7 @@ export async function createPost(title, content) {
 }
 
 export async function editPost(id, title, content) {
-    const res = await fetch(`http://localhost:3000/admin/posts/${id}`, {
+    const res = await fetch(`${BASE_URL}/admin/posts/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
