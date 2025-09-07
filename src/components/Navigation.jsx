@@ -4,7 +4,8 @@ import "../styles/Navigation.css";
 const Navigation = () => {
   const location = useLocation();
   const isActive =
-    location.pathname === "/admin/posts" || location.pathname.includes("/admin/posts/");
+    location.pathname === "/admin/posts" ||
+    location.pathname.includes("/admin/posts/");
   return (
     <nav className="navigation">
       <div className="navigation_home">
@@ -21,7 +22,7 @@ const Navigation = () => {
           target="_blank"
         >
           <img
-            src="../../src/assets/icons/github-142-svgrepo-com.svg"
+            src="/icons/github-142-svgrepo-com.svg"
             alt="github icon"
             width="25"
             height="25"
