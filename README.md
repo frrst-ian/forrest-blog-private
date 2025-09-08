@@ -8,7 +8,7 @@ This private admin frontend interfaces with the [Blog API backend](https://githu
 
 > **Note:** This is a private admin interface for blog management. Access is restricted to authorized users only.
 
-**Admin Panel:** [https://ianforrest.netlify.app/admin/posts](https://ianforrest-admin.netlify.app/admin/posts)
+**Admin Panel:** [ianforrest-admin.netlify.app](https://ianforrest-admin.netlify.app/admin/posts)
 
 ## Tech Stack
 
