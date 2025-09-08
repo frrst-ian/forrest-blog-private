@@ -9,7 +9,7 @@ const AppRoutes = () => {
     return (
         <Routes>
             <Route path="/auth/login" element={<LogInContainer />} />
-            <Route path="/" element={<Navigate to="/admin/posts" replace />} />
+            <Route path="/" element={<Navigate to="/auth/login" replace />} />
             <Route path="/admin/posts" element={<PostListContainer />} />
             <Route path="/admin/posts/new" element={<CreatePostContainer />} />
             <Route

@@ -6,13 +6,19 @@ const Navigation = () => {
   const isActive =
     location.pathname === "/admin/posts" ||
     location.pathname.includes("/admin/posts/");
+  
+  // Hide home link on login page
+  const shouldShowHome = location.pathname !== "/auth/login";
+  
   return (
     <nav className="navigation">
-      <div className="navigation_home">
-        <Link to="posts" className={isActive ? "active" : ""}>
-          Home
-        </Link>
-      </div>
+      {shouldShowHome && (
+        <div className="navigation_home">
+          <Link to="posts" className={isActive ? "active" : ""}>
+            Home
+          </Link>
+        </div>
+      )}
       <div className="navigation_links">
         <a
           className="navigation_icon"

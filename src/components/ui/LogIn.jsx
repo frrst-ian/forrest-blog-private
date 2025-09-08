@@ -1,3 +1,5 @@
+import "../../styles/components/LogIn.css"
+
 const LogIn = ({
     error,
     onSubmit,
@@ -10,8 +12,9 @@ const LogIn = ({
       return (
     <div className="login">
       {error && <div> {error}</div>}
-      <form onSubmit={onSubmit}>
+      <form className="login" onSubmit={onSubmit}>
         <input
+          name="email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -19,13 +22,14 @@ const LogIn = ({
           required
         />
         <input
+          name="password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
           required
         />
-        <button type="submit" disabled={submitting}>
+        <button className="btn --btn-login" type="submit" disabled={submitting}>
           {submitting ? "Logging in..." : "Login"}
         </button>
       </form>

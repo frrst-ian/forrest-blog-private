@@ -1,0 +1,37 @@
+form.login,
+.login > form > input {
+  width: 100%;
+}
+
+.login > form > input {
+  height: 42px;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: 0.2px;
+  background: hsla(0, 0%, 100%, 0.05);
+  border: 1px solid hsla(0, 0%, 100%, 0.05);
+  outline: none;
+  transition:
+    color 0.3s ease,
+    border 0.3s ease;
+  padding: 0 20px;
+  font-family: "Jetbrains Mono";
+  border-radius: 12px;
+}
+.input-group > label + input:hover {
+  border-color: hsla(0, 0%, 100%, 0.25);
+}
+
+form.login {
+  display: flex;
+  justify-content: center;
+  height: 500px;
+  gap: 12px;
+}
+
+.--btn-login {
+  width: 100%;
+  border-radius: 12px;
+}
